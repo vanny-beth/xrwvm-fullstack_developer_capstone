@@ -124,3 +124,18 @@ img{
     text-align:center;
     box-shadow: 2px 2px 3px #999;  
 }
+
+.navbar {
+    background-color: turquoise;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .active {
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+  }
+  
