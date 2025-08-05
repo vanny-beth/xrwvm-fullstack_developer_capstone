@@ -1,19 +1,51 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Contact Us</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
 </head>
-<body>
-    <nav>
-        <a href="/">Dealerships</a>
-        <a href="/">Home</a>
-        <a href="/about">About Us</a>
-        <a href="/contact" class="active">Contact Us</a>
-    </nav>
 
-    <h1>Contact Us</h1>
-    <p>Email: contact@dealership.com</p>
-    <p>Phone: +123456789</p>
-</body>
+<div>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
+    <div class="container-fluid">
+      <h2 style="padding-right: 5%;">Dealerships</h2>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" style="font-size: larger;" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: larger;" href="/about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link active" style="font-size: larger;" href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dealership Image in a Contained Card -->
+  <div class="image-card">
+    <div class="position-relative">
+      <img src="/static/dealership.png" class="img-fluid" alt="Dealership">
+    </div>
+  </div>
+  
+  
+  <!-- Contact Info Card -->
+  <div class="card" style="width: 80%; margin: auto; margin-top: 5%;">
+    <div class="row" style="padding: 2%;">
+      <div class="col-md-2 text-center">
+        <img src="/static/person-headset.png" alt="Customer Service" class="img_icon">
+      </div>
+      <div class="col-md-10">
+        <h3>Contact Us</h3>
+        <p><strong>Contact Customer Service:</strong> support@bestcars.com</p>
+        <p><strong>National Advertising Team:</strong> NationalSales@bestcars.com</p>
+        <p><strong>Public Relations:</strong> PR@bestcars.com</p>
+        <p><strong>Corporate Office:</strong> 312-611-1111</p>
+        <p><strong>Become a Dealer:</strong> <a href="https://growwithbestcars.com" target="_blank">growwithbestcars.com</a></p>
+      </div>
+    </div>
+  </div>
+</div>
 </html>
