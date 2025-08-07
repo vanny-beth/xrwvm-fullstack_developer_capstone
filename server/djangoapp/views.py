@@ -38,6 +38,10 @@ def login_user(request):
         data = {"userName": username, "status": "Authenticated"}
     return JsonResponse(data)
 
+def logout_request(request):
+    logout(request)
+    return JsonResponse({"message": "Logged out successfully"})
+
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
 # ...
