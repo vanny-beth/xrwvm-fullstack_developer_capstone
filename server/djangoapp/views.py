@@ -133,7 +133,7 @@ def add_review(request):
         return JsonResponse({"status": 403, "message": "Unauthorized"})
 
 def get_dealers(request):
-    url = "http://localhost:3000/api/dealers"
+    url = "http://localhost:3030/api/dealers"
     try:
         response = requests.get(url)
         dealers = response.json()
