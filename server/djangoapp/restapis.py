@@ -27,6 +27,22 @@ def get_request(endpoint, **kwargs):
         # If any error occurs
         print("Network exception occurred")
 
+def get_dealers_from_cf(url):
+    try:
+        response = requests.get(url)
+        json_data = response.json()
+        dealers = []
+
+        for dealer in json_data["entries"]:  # or ["dealers"], depends on structure
+            dealer_obj = CarDealer()
+            dealers.append(dealer_obj)
+
+        return dealers
+    except Exception as e:
+        print("Error:", e)
+        return None
+
+
 def analyze_review_sentiments(text):
     request_url = sentiment_analyzer_url+"analyze/"+text
     try:

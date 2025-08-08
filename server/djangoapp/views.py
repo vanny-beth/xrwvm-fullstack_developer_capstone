@@ -132,3 +132,11 @@ def add_review(request):
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
 
+def get_dealers(request):
+    url = "http://localhost:3000/api/dealers"
+    try:
+        response = requests.get(url)
+        dealers = response.json()
+        return JsonResponse({"status": 200, "dealers": dealers})
+    except Exception as e:
+        return JsonResponse({"status": 500, "message": str(e)})

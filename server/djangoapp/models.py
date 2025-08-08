@@ -66,6 +66,20 @@ class CarModel(models.Model):
     def __str__(self):
         return f"{self.car_make.name} {self.name} ({self.year})"
 
+class Dealer(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.name} ({self.location})"
+class Dealer(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    address = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.location})"
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
 # - Many-To-One relationship to Car Make model (One Car Make has many
