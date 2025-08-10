@@ -91,7 +91,9 @@ const Register = () => {
 
         </div>
         <div className="submit_panel">
-          <input className="submit" type="submit" value="Register"/>
+        <button type="submit" className="submit">
+            Register
+        </button>
         </div>
       </form>
       </div>
