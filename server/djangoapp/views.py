@@ -1,6 +1,7 @@
 # Uncomment the required imports before adding the code
 
 from django.shortcuts import render
+import requests
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
@@ -17,6 +18,7 @@ import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
+from django.shortcuts import render
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -89,6 +91,28 @@ def get_cars(request):
         })
     return JsonResponse({"CarModels": cars})
 
+def get_request(endpoint):
+    url = "http://localhost:3030" + endpoint
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        # If the microservice returns a dictionary like {"dealers": [...]}
+        if isinstance(data, dict) and "dealers" in data:
+            return data["dealers"]
+
+        # If it returns a raw list of dealers
+        if isinstance(data, list):
+            return data
+
+        # Fallback
+        return []
+    except requests.exceptions.RequestException as e:
+        print("Error fetching dealers:", e)
+        return []
+
+
 def get_dealerships(request, state="All"):
     if(state == "All"):
         endpoint = "/fetchDealers"
@@ -132,11 +156,7 @@ def add_review(request):
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
 
-def get_dealers(request):
-    url = "http://localhost:3030/api/dealers"
-    try:
-        response = requests.get(url)
-        dealers = response.json()
-        return JsonResponse({"status": 200, "dealers": dealers})
-    except Exception as e:
-        return JsonResponse({"status": 500, "message": str(e)})
+
+
+def post_review_page(request, dealer_id):
+    return render(request, "index.html")  # Or a dedicated review form template
