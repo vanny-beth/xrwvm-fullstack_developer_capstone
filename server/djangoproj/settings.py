@@ -60,6 +60,7 @@ ROOT_URLCONF = 'djangoproj.urls'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build/static'),
+    os.path.join(BASE_DIR, 'frontend/static'),
 ]
 
 TEMPLATES = [
