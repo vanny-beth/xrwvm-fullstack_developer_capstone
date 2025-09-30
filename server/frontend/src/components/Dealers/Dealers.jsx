@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // ✅ Import Link for client-side routing
+import { Link } from 'react-router-dom';
 import "./Dealers.css";
 import "../assets/style.css";
 import Header from '../Header/Header';
@@ -10,41 +10,38 @@ const Dealers = () => {
   const [states, setStates] = useState([]);
 
   const dealer_url = "/djangoapp/get_dealers";
-  const dealer_url_by_state = "/djangoapp/get_dealers/";
-
-  const filterDealers = async (state) => {
-    const res = await fetch(dealer_url_by_state + state, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    if (retobj.status === 200) {
-      setDealersList(Array.from(retobj.dealers));
-    }
-  };
 
   const get_dealers = async () => {
-    const res = await fetch(dealer_url, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    if (retobj.status === 200) {
-      const all_dealers = Array.from(retobj.dealers);
-      const uniqueStates = [...new Set(all_dealers.map(dealer => dealer.state))];
+    const res = await fetch(dealer_url);
+    const data = await res.json();
+    console.log("Dealers API response:", data);
+    if (data.status === 200) {
+      const all_dealers = Array.from(data.dealers);
+      const uniqueStates = [...new Set(all_dealers.map(d => d.state))];
       setStates(uniqueStates);
       setDealersList(all_dealers);
     }
   };
 
-  useEffect(() => {
-    get_dealers();
-  }, []);
+  const filterDealers = async (state) => {
+    if (state === "All") {
+      get_dealers();
+      return;
+    }
+    const res = await fetch(`${dealer_url}?state=${state}`);
+    const data = await res.json();
+    if (data.status === 200) {
+      setDealersList(Array.from(data.dealers));
+    }
+  };  
+
+  useEffect(() => { get_dealers(); }, []);
 
   const isLoggedIn = sessionStorage.getItem("username") !== null;
 
   return (
     <div>
       <Header />
-
       <table className='table'>
         <thead>
           <tr>
@@ -54,8 +51,8 @@ const Dealers = () => {
             <th>Address</th>
             <th>Zip</th>
             <th>
-              <select name="state" id="state" onChange={(e) => filterDealers(e.target.value)}>
-                <option value="" selected disabled hidden>State</option>
+              <select defaultValue="" onChange={e => filterDealers(e.target.value)}>
+                <option value="" disabled hidden>State</option>
                 <option value="All">All States</option>
                 {states.map(state => (
                   <option key={state} value={state}>{state}</option>
@@ -66,19 +63,17 @@ const Dealers = () => {
           </tr>
         </thead>
         <tbody>
-          {dealersList.map(dealer => (
-            <tr key={dealer.id}>
-              <td>{dealer.id}</td>
-              <td>
-                <Link to={`/dealer/${dealer.id}`}>{dealer.full_name}</Link> {/* ✅ Link instead of <a> */}
-              </td>
-              <td>{dealer.city}</td>
-              <td>{dealer.address}</td>
-              <td>{dealer.zip}</td>
-              <td>{dealer.state}</td>
+          {dealersList.map(d => (
+            <tr key={d.id}>
+              <td>{d.id}</td>
+              <td><Link to={`/dealer/${d.id}`}>{d.full_name}</Link></td>
+              <td>{d.city}</td>
+              <td>{d.address}</td>
+              <td>{d.zip}</td>
+              <td>{d.state}</td>
               {isLoggedIn && (
                 <td>
-                  <Link to={`/postreview/${dealer.id}`}>
+                  <Link to={`/postreview/${d.id}`}>
                     <img src={review_icon} className="review_icon" alt="Post Review" />
                   </Link>
                 </td>

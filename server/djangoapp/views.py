@@ -2,42 +2,33 @@
 
 from django.shortcuts import render
 import requests
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from datetime import datetime
 from .models import CarMake, CarModel
-
-
-from django.http import JsonResponse
-from .restapis import get_request, analyze_review_sentiments
-from django.contrib.auth import login, authenticate
+from .restapis import analyze_review_sentiments
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
-from django.shortcuts import render
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
 
 # Create your views here.
 
 # Create a `login_request` view to handle sign in request
 @csrf_exempt
 def login_user(request):
-    # Get username and password from request.POST dictionary
     data = json.loads(request.body)
     username = data['userName']
     password = data['password']
-    # Try to check if provide credential can be authenticated
     user = authenticate(username=username, password=password)
     data = {"userName": username}
     if user is not None:
-        # If user is valid, call login method to login current user
         login(request, user)
         data = {"userName": username, "status": "Authenticated"}
     return JsonResponse(data)
@@ -46,10 +37,8 @@ def logout_request(request):
     logout(request)
     return JsonResponse({"message": "Logged out successfully"})
 
-
 @csrf_exempt
 def registration(request):
-    context = {}
     data = json.loads(request.body)
     username = data['userName']
     password = data['password']
@@ -79,7 +68,6 @@ def registration(request):
 
 def get_cars(request):
     count = CarMake.objects.filter().count()
-    print(count)
     if count == 0:
         initiate()
     car_models = CarModel.objects.select_related('car_make')
@@ -91,45 +79,43 @@ def get_cars(request):
         })
     return JsonResponse({"CarModels": cars})
 
-def get_request(endpoint):
+# Utility to call Express microservice
+def get_request(endpoint, params=None):
     url = "http://localhost:3030" + endpoint
     try:
-        response = requests.get(url)
+        response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()
 
-        # If the microservice returns a dictionary like {"dealers": [...]}
         if isinstance(data, dict) and "dealers" in data:
             return data["dealers"]
-
-        # If it returns a raw list of dealers
         if isinstance(data, list):
             return data
-
-        # Fallback
         return []
     except requests.exceptions.RequestException as e:
         print("Error fetching dealers:", e)
         return []
 
+# Fetch dealerships (all or by state)
+def get_dealerships(request):
+    state = request.GET.get("state", None)
+    endpoint = "/fetchDealers"
+    params = {}
 
-def get_dealerships(request, state="All"):
-    if(state == "All"):
-        endpoint = "/fetchDealers"
-    else:
-        endpoint = "/fetchDealers/" + state
-    dealerships = get_request(endpoint)
+    if state and state != "All":
+        params["state"] = state
+
+    dealerships = get_request(endpoint, params=params)
     return JsonResponse({"status": 200, "dealers": dealerships})
 
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
 def get_dealer_reviews(request, dealer_id):
-    if(dealer_id):
+    if dealer_id:
         endpoint = "/fetchReviews/dealer/" + str(dealer_id)
         reviews = get_request(endpoint)
         for review_detail in reviews:
             response = analyze_review_sentiments(review_detail['review'])
-            print(response)
-            review_detail['sentiment'] = response['sentiment']  # or 'label' if that's what the microservice returns
+            review_detail['sentiment'] = response['sentiment']
         return JsonResponse({"status": 200, "reviews": reviews})
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
@@ -140,11 +126,9 @@ def get_dealer_details(request, dealer_id):
         endpoint = "/fetchDealer/" + str(dealer_id)
         dealership = get_request(endpoint)
 
-        # If the microservice returns a single dict, use it directly
         if isinstance(dealership, dict) and "id" in dealership:
             return JsonResponse({"status": 200, "dealer": dealership})
 
-        # If it's empty or invalid
         return JsonResponse({"status": 404, "message": f"No dealer found with ID {dealer_id}"})
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
@@ -160,8 +144,6 @@ def add_review(request):
             return JsonResponse({"status": 401, "message": "Error in posting review"})
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
-
-
 
 def post_review_page(request, dealer_id):
     return render(request, "index.html")  # Or a dedicated review form template

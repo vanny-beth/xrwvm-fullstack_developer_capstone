@@ -8,21 +8,21 @@ const Dealer = () => {
   const [dealer, setDealer] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const getDealerById = async () => {
-    try {
-      const res = await fetch(`/djangoapp/get_dealer/${id}`);
-      const data = await res.json();
-      if (data.status === 200) {
-        setDealer(data.dealer);
-      }
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching dealer:", err);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getDealerById = async () => {
+      try {
+        const res = await fetch(`/djangoapp/dealer/${id}`);
+        const data = await res.json();
+        if (data.status === 200) {
+          setDealer(data.dealer);
+        }
+      } catch (err) {
+        console.error("Error fetching dealer:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getDealerById();
   }, [id]);
 
