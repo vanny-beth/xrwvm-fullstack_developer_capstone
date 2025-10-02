@@ -87,8 +87,13 @@ ipython_config.py
 # Node dependencies
 node_modules/
 
-# MongoDB database files
-data/db/
+# MongoDB internal files (still ignored)
+server/database/data/WiredTiger*
+server/database/data/journal/
+server/database/data/storage.bson
+
+# Track JSON files in data so they come with clones
+!server/database/data/*.json
 
 # Lock files
 *.lock
