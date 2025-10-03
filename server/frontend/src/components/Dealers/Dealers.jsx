@@ -28,7 +28,7 @@ const Dealers = () => {
       get_dealers();
       return;
     }
-    const res = await fetch(`${dealer_url}?state=${state}`);
+    const res = await fetch(`${dealer_url}/${state}`);
     const data = await res.json();
     if (data.status === 200) {
       setDealersList(Array.from(data.dealers));

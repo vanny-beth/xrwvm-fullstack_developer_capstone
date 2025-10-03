@@ -53,14 +53,16 @@ app.get("/fetchReviews", async (req, res) => {
 });
 
 app.get("/fetchReviews/dealer/:id", async (req, res) => {
-  try {
-    const documents = await Reviews.find({ dealership: req.params.id });
-    res.json(documents);
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching documents" });
-  }
-});
-
+    try {
+      const dealerId = parseInt(req.params.id); // 👈 Cast to number
+      const documents = await Reviews.find({ dealership: dealerId });
+      res.json(documents);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({ error: "Error fetching documents" });
+    }
+  });
+    
 app.get("/fetchDealers", async (req, res) => {
   try {
     const dealers = await Dealerships.find();
@@ -97,31 +99,31 @@ app.get("/fetchDealer/:id", async (req, res) => {
   }
 });
 
-app.post("/insert_review", express.raw({ type: "*/*" }), async (req, res) => {
-  try {
-    const data = JSON.parse(req.body);
-    const documents = await Reviews.find().sort({ id: -1 });
-    const new_id = documents.length ? documents[0].id + 1 : 1;
-
-    const review = new Reviews({
-      id: new_id,
-      name: data.name,
-      dealership: data.dealership,
-      review: data.review,
-      purchase: data.purchase,
-      purchase_date: data.purchase_date,
-      car_make: data.car_make,
-      car_model: data.car_model,
-      car_year: data.car_year
-    });
-
-    const savedReview = await review.save();
-    res.json(savedReview);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error inserting review" });
-  }
-});
+app.post("/insert_review", async (req, res) => {
+    try {
+      const data = req.body;
+      const documents = await Reviews.find().sort({ id: -1 });
+      const new_id = documents.length ? documents[0].id + 1 : 1;
+  
+      const review = new Reviews({
+        id: new_id,
+        name: data.name,
+        dealership: data.dealership,
+        review: data.review,
+        purchase: data.purchase,
+        purchase_date: data.purchase_date,
+        car_make: data.car_make,
+        car_model: data.car_model,
+        car_year: data.car_year
+      });
+  
+      const savedReview = await review.save();
+      res.json({ status: 200, review: savedReview });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: 500, error: "Error inserting review" });
+    }
+  });  
 
 // Start server
 app.listen(port, () => console.log(`Server is running on http://localhost:${port}`));

@@ -1,42 +1,21 @@
-table{
-    margin:5px;
-    padding:10px;
+/* Existing table styles */
+table {
+    margin: 5px;
+    padding: 10px;
     border: grey solid 1px;
-    width:100%
+    width: 100%;
   }
   
-  td{
-    padding:10px;
+  td {
+    padding: 10px;
     align-self: center;
-    border:solid grey .5px;
+    border: solid grey 0.5px;
     text-align: center;
     font-size: large;
   }
   
-  .review_panel{
-    display: flex;
-    flex-direction: column;
-    border: solid grey;
-    position: relative;
-    height:7cm;
-    width:6cm;
-    overflow-y: scroll;
-    padding:.3cm;
-    padding-top: 0%;
-    border-radius:10px; 
-    box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5);
-    margin-bottom: .5cm;
-    justify-content: space-between;
-  }
-
-  .postreview{
-    margin:20px;
-    padding:10px;
-    font-size: larger;
-  }
-
-  th{
-    padding:5px;
+  th {
+    padding: 5px;
     align-self: center;
     text-align: center;
     font-size: large;
@@ -44,7 +23,24 @@ table{
     vertical-align: middle;
     color: black;
   }
-
+  
+  /* Review panel styles */
+  .review_panel {
+    display: flex;
+    flex-direction: column;
+    border: solid grey;
+    position: relative;
+    height: 7cm;
+    width: 6cm;
+    overflow-y: scroll;
+    padding: 0.3cm;
+    padding-top: 0%;
+    border-radius: 10px;
+    box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.5cm;
+    justify-content: space-between;
+  }
+  
   .reviews_panel {
     display: flex;
     flex-direction: row;
@@ -54,35 +50,124 @@ table{
     margin-top: 1cm;
     align-items: flex-start;
   }
-
+  
   .reviewer {
-    margin: 10px; /* Optional margin for spacing */
+    margin: 10px;
     font-style: italic;
     color: gray;
     font-size: small;
-}
-
-.review {
-  margin-top: 1.5cm;
-}
-
-.emotion_icon {
-  align-self: center;
-  position:fixed;
-    width:40px;
-    height:40px;
-    background-color:#0C9;
-    color:#FFF;
-    border-radius:50px;
-    text-align:center;
-    box-shadow: 2px 2px 3px #999;  
-}
-
-.review_icon {
-  width:40px;
-}
-
-.review_icon:hover {
-  transform: scale(1.1);
-  border: solid lightgray;
-}
+  }
+  
+  .review {
+    margin-top: 1.5cm;
+  }
+  
+  .emotion_icon {
+    align-self: center;
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    background-color: #0C9;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+  }
+  
+  .review_icon {
+    width: 40px;
+  }
+  
+  .review_icon:hover {
+    transform: scale(1.1);
+    border: solid lightgray;
+  }
+  
+  /* Post review button */
+  .postreview {
+    margin: 20px;
+    padding: 10px;
+    font-size: larger;
+  }
+  
+  .post-review-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .post-review-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Dealer page layout */
+  .dealer-page {
+    padding: 40px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .dealer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  
+  .dealer-header h1 {
+    font-size: 2em;
+    color: #003366;
+  }
+  
+  /* Dealer info card */
+  .dealer-details-card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dealer-details-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .dealer-details-card li {
+    margin-bottom: 8px;
+  }
+  
+  /* Review cards */
+  .reviews-section h2 {
+    margin-bottom: 20px;
+    color: #003366;
+  }
+  
+  .review-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .review-card {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-left: 5px solid #007bff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .review-text {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+  }
+  
+  .review-meta {
+    font-size: 0.9em;
+    color: #555;
+  }
+  

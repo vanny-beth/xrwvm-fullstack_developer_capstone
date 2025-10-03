@@ -15,6 +15,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
 
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -134,16 +135,27 @@ def get_dealer_details(request, dealer_id):
         return JsonResponse({"status": 400, "message": "Bad Request"})
 
 # Create a `add_review` view to submit a review
+@csrf_exempt
 def add_review(request):
-    if not request.user.is_anonymous:
+    if request.method == "POST":
         data = json.loads(request.body)
         try:
             response = post_review(data)
-            return JsonResponse({"status": 200})
-        except:
+            return JsonResponse(response)
+        except Exception as e:
+            print("Error in posting review:", e)
             return JsonResponse({"status": 401, "message": "Error in posting review"})
     else:
-        return JsonResponse({"status": 403, "message": "Unauthorized"})
-
+        return JsonResponse({"status": 405, "message": "Method not allowed"})
+        
 def post_review_page(request, dealer_id):
     return render(request, "index.html")  # Or a dedicated review form template
+
+def post_review(data):
+    try:
+        print("Received review data:", data)
+        reviews_collection.insert_one(data)   # 👈 actually save to MongoDB
+        return {"status": 200, "message": "Review saved"}
+    except Exception as e:
+        print("Error inserting review:", e)
+        return {"status": 500, "message": "Error saving review"}
