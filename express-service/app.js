@@ -22,10 +22,10 @@ const Dealerships = require("./models/dealership");
 
 
 // Connect to MongoDB
-mongoose.connect("mongodb://mongo_db:27017/dealershipsDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+mongoose.connect("mongodb://localhost:27017/dealerships", {
+  // You can remove these deprecated options
 })
+
 .then(() => {
   console.log("Connected to MongoDB");
 
