@@ -8,6 +8,7 @@ import review_icon from "../assets/reviewicon.png";
 const Dealers = () => {
   const [dealersList, setDealersList] = useState([]);
   const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState("All");
 
   const dealer_url = "/djangoapp/get_dealers";
 
@@ -24,6 +25,7 @@ const Dealers = () => {
   };
 
   const filterDealers = async (state) => {
+    setSelectedState(state);
     if (state === "All") {
       get_dealers();
       return;
@@ -33,15 +35,36 @@ const Dealers = () => {
     if (data.status === 200) {
       setDealersList(Array.from(data.dealers));
     }
-  };  
+  };
 
-  useEffect(() => { get_dealers(); }, []);
+  useEffect(() => {
+    get_dealers();
+  }, []);
 
   const isLoggedIn = sessionStorage.getItem("username") !== null;
 
   return (
-    <div>
+    <div className="dealer-page">
       <Header />
+
+      <div className="dealer-header">
+        <h1>Dealerships</h1>
+        <select
+          value={selectedState}
+          onChange={e => filterDealers(e.target.value)}
+        >
+          <option value="" disabled hidden>State</option>
+          <option value="All">All States</option>
+          {states.map(state => (
+            <option key={state} value={state}>{state}</option>
+          ))}
+        </select>
+      </div>
+
+      <h2 style={{ margin: "20px 0", color: "#003366" }}>
+        Showing dealers in: {selectedState}
+      </h2>
+
       <table className='table'>
         <thead>
           <tr>
@@ -50,15 +73,7 @@ const Dealers = () => {
             <th>City</th>
             <th>Address</th>
             <th>Zip</th>
-            <th>
-              <select defaultValue="" onChange={e => filterDealers(e.target.value)}>
-                <option value="" disabled hidden>State</option>
-                <option value="All">All States</option>
-                {states.map(state => (
-                  <option key={state} value={state}>{state}</option>
-                ))}
-              </select>
-            </th>
+            <th>State</th>
             {isLoggedIn && <th>Review Dealer</th>}
           </tr>
         </thead>

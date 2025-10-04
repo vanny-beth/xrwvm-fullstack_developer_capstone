@@ -98,8 +98,7 @@ def get_request(endpoint, params=None):
         return []
 
 # Fetch dealerships (all or by state)
-def get_dealerships(request):
-    state = request.GET.get("state", None)
+def get_dealerships(request, state=None):
     endpoint = "/fetchDealers"
     params = {}
 

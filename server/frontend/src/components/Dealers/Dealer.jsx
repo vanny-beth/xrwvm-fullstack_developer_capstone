@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "./Dealers.css";
 import "../assets/style.css";
+import Header from '../Header/Header';
 
 const Dealer = () => {
   const { id } = useParams();
@@ -50,54 +51,51 @@ const Dealer = () => {
   if (!dealer) return <p>No dealer found with ID {id}</p>;
 
   return (
-    <div style={{ margin: "20px" }}>
-      <h1>Dealer Details</h1>
-      <table border="1" cellPadding="8" style={{ width: "100%", borderCollapse: "collapse" }}>
-        <tbody>
-          <tr><td>ID</td><td>{dealer.id}</td></tr>
-          <tr><td>Full Name</td><td>{dealer.full_name}</td></tr>
-          <tr><td>City</td><td>{dealer.city}</td></tr>
-          <tr><td>State</td><td>{dealer.state}</td></tr>
-          <tr><td>Address</td><td>{dealer.address}</td></tr>
-          <tr><td>Zip</td><td>{dealer.zip}</td></tr>
-        </tbody>
-      </table>
-
-      <h2 style={{ marginTop: "30px" }}>Reviews</h2>
-      {reviews.length === 0 ? (
-        <p>No reviews found for this dealer.</p>
-      ) : (
-        <table border="1" cellPadding="8" style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Review</th>
-              <th>Purchase</th>
-              <th>Car</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
+    <div className="dealer-page">
+      <Header /> {/* Blue navbar from Header.jsx */}
+  
+      <div className="dealer-header">
+        <h1>Dealer Details</h1>
+      </div>
+  
+      <div className="dealer-details-card">
+        <ul>
+          <li><strong>ID:</strong> {dealer.id}</li>
+          <li><strong>Full Name:</strong> {dealer.full_name}</li>
+          <li><strong>City:</strong> {dealer.city}</li>
+          <li><strong>State:</strong> {dealer.state}</li>
+          <li><strong>Address:</strong> {dealer.address}</li>
+          <li><strong>Zip:</strong> {dealer.zip}</li>
+        </ul>
+      </div>
+  
+      <div className="reviews-section">
+        <h2>Reviews</h2>
+        {reviews.length === 0 ? (
+          <p>No reviews found for this dealer.</p>
+        ) : (
+          <div className="review-cards">
             {reviews.map((r) => (
-              <tr key={r.id}>
-                <td>{r.name}</td>
-                <td>{r.review}</td>
-                <td>{r.purchase ? "Yes" : "No"}</td>
-                <td>{`${r.car_make} ${r.car_model} ${r.car_year}`}</td>
-                <td>{r.purchase_date}</td>
-              </tr>
+              <div className="review-card" key={r.id}>
+                <p className="review-text">{r.review}</p>
+                <p className="review-meta">
+                  <strong>{r.name}</strong> — {r.purchase ? "Purchased" : "Not Purchased"}  
+                  <br />
+                  {r.car_make} {r.car_model} ({r.car_year}) on {r.purchase_date}
+                </p>
+              </div>
             ))}
-          </tbody>
-        </table>
-      )}
-
+          </div>
+        )}
+      </div>
+  
       <div style={{ marginTop: "20px" }}>
-        <a href={`/post_review/${id}`} style={{ textDecoration: "none", color: "blue" }}>
+        <a href={`/post_review/${id}`} className="post-review-button">
           ➕ Post a Review
         </a>
       </div>
     </div>
   );
-};
+    
 
 export default Dealer;
