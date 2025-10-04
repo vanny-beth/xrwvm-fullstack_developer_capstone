@@ -12,9 +12,11 @@ sentiment_analyzer_url = os.getenv(
     default="http://localhost:5050/")
 
 # def get_request(endpoint, **kwargs):
+
+
 def get_request(endpoint, **kwargs):
     params = ""
-    if(kwargs):
+    if (kwargs):
         for key, value in kwargs.items():
             params += f"{key}={value}&"
     request_url = backend_url + endpoint + "?" + params
@@ -27,13 +29,15 @@ def get_request(endpoint, **kwargs):
         # If any error occurs
         print("Network exception occurred")
 
+
 def get_dealers_from_cf(url):
     try:
         response = requests.get(url)
         json_data = response.json()
         dealers = []
 
-        for dealer in json_data["entries"]:  # or ["dealers"], depends on structure
+        # or ["dealers"], depends on structure
+        for dealer in json_data["entries"]:
             dealer_obj = CarDealer()
             dealers.append(dealer_obj)
 
@@ -57,6 +61,8 @@ def analyze_review_sentiments(text):
 # Add code for retrieving sentiments
 
 # Add code for posting review
+
+
 def post_review(data_dict):
     request_url = backend_url + "/insert_review"
     try:
