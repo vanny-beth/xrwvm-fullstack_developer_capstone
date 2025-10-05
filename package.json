@@ -1,0 +1,10 @@
+{
+    "name": "xrwvm-fullstack_developer_capstone",
+    "version": "1.0.0",
+    "type": "module",
+    "devDependencies": {
+      "eslint": "^9.37.0",
+      "jshint": "^2.13.6"
+    }
+  }
+  
