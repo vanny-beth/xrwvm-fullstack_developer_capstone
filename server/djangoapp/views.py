@@ -11,11 +11,14 @@ import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
+from pymongo import MongoClient
 
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+mongo_client = MongoClient("mongodb://localhost:27017/")
+reviews_collection = mongo_client["dealerships"]["reviews"]
 # Create your views here.
 
 # Create a `login_request` view to handle sign in request
@@ -52,8 +55,8 @@ def registration(request):
     try:
         User.objects.get(username=username)
         username_exist = True
-    except:
-        logger.debug(f"{username} is a new user")
+    except Exception as e:
+        logger.debug(f"{username} is a new user: {e}")
 
     if not username_exist:
         user = User.objects.create_user(
@@ -66,7 +69,10 @@ def registration(request):
         login(request, user)
         return JsonResponse({"userName": username, "status": "Authenticated"})
     else:
-        return JsonResponse({"userName": username, "error": "Already Registered"})
+        return JsonResponse({
+            "userName": username,
+            "error": "Already Registered"
+        })
 
 
 def get_cars(request):
@@ -139,7 +145,11 @@ def get_dealer_details(request, dealer_id):
         if isinstance(dealership, dict) and "id" in dealership:
             return JsonResponse({"status": 200, "dealer": dealership})
 
-        return JsonResponse({"status": 404, "message": f"No dealer found with ID {dealer_id}"})
+        return JsonResponse({
+            "status": 404,
+            "message": f"No dealer found with ID {dealer_id}"
+        })
+
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
 
@@ -155,7 +165,10 @@ def add_review(request):
             return JsonResponse(response)
         except Exception as e:
             print("Error in posting review:", e)
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
+            return JsonResponse({
+                "status": 401,
+                "message": "Error in posting review"
+            })
     else:
         return JsonResponse({"status": 405, "message": "Method not allowed"})
 
@@ -167,7 +180,7 @@ def post_review_page(request, dealer_id):
 def post_review(data):
     try:
         print("Received review data:", data)
-        reviews_collection.insert_one(data)   # 👈 actually save to MongoDB
+        reviews_collection.insert_one(data)
         return {"status": 200, "message": "Review saved"}
     except Exception as e:
         print("Error inserting review:", e)
