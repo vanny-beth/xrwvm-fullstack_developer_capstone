@@ -13,8 +13,9 @@ const Dealer = () => {
 
   const API_BASE_URL = "https://vanessayucab-3030.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai";
 
+  // Fetch dealer details
   useEffect(() => {
-    const getDealerById = async () => {
+    const fetchDealer = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/fetchDealer/${id}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -27,12 +28,12 @@ const Dealer = () => {
         setLoading(false);
       }
     };
-
-    getDealerById();
+    fetchDealer();
   }, [id]);
 
+  // Fetch reviews for this dealer
   useEffect(() => {
-    const getReviewsByDealer = async () => {
+    const fetchReviews = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/fetchReviews/dealer/${id}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -42,22 +43,22 @@ const Dealer = () => {
         console.error("Error fetching reviews:", err);
       }
     };
-
-    getReviewsByDealer();
+    fetchReviews();
   }, [id]);
 
+  // Loading and error states
   if (loading) return <p>Loading dealer info...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!dealer) return <p>No dealer found with ID {id}</p>;
 
   return (
     <div className="dealer-page">
-      <Header /> {/* Blue navbar from Header.jsx */}
-  
+      <Header />
+
       <div className="dealer-header">
         <h1>Dealer Details</h1>
       </div>
-  
+
       <div className="dealer-details-card">
         <ul>
           <li><strong>ID:</strong> {dealer.id}</li>
@@ -68,7 +69,7 @@ const Dealer = () => {
           <li><strong>Zip:</strong> {dealer.zip}</li>
         </ul>
       </div>
-  
+
       <div className="reviews-section">
         <h2>Reviews</h2>
         {reviews.length === 0 ? (
@@ -88,7 +89,7 @@ const Dealer = () => {
           </div>
         )}
       </div>
-  
+
       <div style={{ marginTop: "20px" }}>
         <a href={`/post_review/${id}`} className="post-review-button">
           ➕ Post a Review
@@ -96,6 +97,6 @@ const Dealer = () => {
       </div>
     </div>
   );
-    
+};
 
 export default Dealer;

@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Dynamically resolve project root and load .env
+BASE_DIR = Path(__file__).resolve().parent
+ENV_PATH = BASE_DIR / 'djangoapp' / '.env'
+load_dotenv(dotenv_path=ENV_PATH)
+
+SENTIMENT_ANALYZER_URL = os.environ.get("sentiment_analyzer_url")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
