@@ -2,7 +2,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from .models import CarDealer
+from .models import Dealer
 
 load_dotenv()
 
@@ -38,7 +38,7 @@ def get_dealers_from_cf(url):
 
         # or ["dealers"], depends on structure
         for dealer in json_data["entries"]:
-            dealer_obj = CarDealer()
+            dealer_obj = Dealer()
             dealers.append(dealer_obj)
 
         return dealers
