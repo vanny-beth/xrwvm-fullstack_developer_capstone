@@ -5,6 +5,7 @@ import "../assets/style.css";
 import Header from '../Header/Header';
 
 const PostReview = () => {
+  const { id } = useParams();
   const [dealer, setDealer] = useState({});
   const [review, setReview] = useState("");
   const [model, setModel] = useState("");
@@ -12,12 +13,10 @@ const PostReview = () => {
   const [date, setDate] = useState("");
   const [carmodels, setCarmodels] = useState([]);
 
-  const { id } = useParams();
-
-  const root_url = "http://localhost:3030/";
-  const dealer_url = root_url + `djangoapp/dealer/${id}`;
-  const review_url = "https://vanessayucab-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/djangoapp/add_review/";
-  const carmodels_url = "https://vanessayucab-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/djangoapp/get_cars/";
+  // Proxy-relative URLs
+  const dealer_url = `/djangoapp/dealer/${id}`;
+  const review_url = `/djangoapp/add_review/`;
+  const carmodels_url = `/djangoapp/get_cars/`;
 
   const postreview = async (e) => {
     e.preventDefault();
@@ -33,17 +32,17 @@ const PostReview = () => {
     }
 
     let [make_chosen, ...rest] = model.split(" ");
-    let model_chosen = rest.join(" "); // handles models with spaces
+    let model_chosen = rest.join(" ");
 
     let jsoninput = {
       name,
-      dealership: id,
+      dealership: parseInt(id),
       review,
       purchase: true,
       purchase_date: date,
       car_make: make_chosen,
       car_model: model_chosen,
-      car_year: year,
+      car_year: parseInt(year),
     };
 
     console.log("Submitting review:", jsoninput);
@@ -59,10 +58,11 @@ const PostReview = () => {
       console.log("Response from backend:", json);
 
       if (json.status === 200) {
-        alert("✅ Review submitted!");
-        window.location.href = window.location.origin + "/dealer/" + id;
+        alert("Review submitted!");
+        console.log("Redirecting to:", `/dealer/${id}`);
+        window.location.href = `/dealer/${id}`;
       } else {
-        alert("❌ Error posting review: " + (json.message || "Unknown error"));
+        alert("Error posting review: " + (json.message || "Unknown error"));
       }
     } catch (err) {
       console.error("Error submitting review:", err);
@@ -86,7 +86,7 @@ const PostReview = () => {
     try {
       const res = await fetch(carmodels_url);
       const retobj = await res.json();
-      console.log("Fetched car models:", retobj.CarModels); // should log array
+      console.log("Fetched car models:", retobj.CarModels);
       setCarmodels(retobj.CarModels || []);
     } catch (err) {
       console.error("Error fetching car models:", err);
@@ -103,9 +103,11 @@ const PostReview = () => {
       <Header />
       <div style={{ margin: "5%" }}>
         <h1 style={{ color: "darkblue" }}>{dealer.full_name}</h1>
+
         <textarea
           cols="50"
           rows="7"
+          placeholder="Write your review here..."
           onChange={(e) => setReview(e.target.value)}
         ></textarea>
 

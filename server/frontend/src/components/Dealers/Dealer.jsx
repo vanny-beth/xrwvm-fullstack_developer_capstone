@@ -11,16 +11,21 @@ const Dealer = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = "https://vanessayucab-3030.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai";
+  // Proxy-relative URLs
+  const dealer_url = `/djangoapp/dealer/${id}`;
+  const reviews_url = `/djangoapp/reviews/dealer/${id}`;
 
-  // Fetch dealer details
   useEffect(() => {
     const fetchDealer = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/fetchDealer/${id}`);
+        const res = await fetch(dealer_url);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
-        setDealer(data);
+        if (data.status === 200 && data.dealer?.length > 0) {
+          setDealer(data.dealer[0]);
+        } else {
+          throw new Error("Dealer not found");
+        }
       } catch (err) {
         console.error("Error fetching dealer:", err);
         setError(err.message);
@@ -28,25 +33,23 @@ const Dealer = () => {
         setLoading(false);
       }
     };
-    fetchDealer();
-  }, [id]);
 
-  // Fetch reviews for this dealer
-  useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/fetchReviews/dealer/${id}`);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const res = await fetch(reviews_url);
         const data = await res.json();
-        setReviews(data);
+        if (data.reviews) {
+          setReviews(data.reviews);
+        }
       } catch (err) {
         console.error("Error fetching reviews:", err);
       }
     };
+
+    fetchDealer();
     fetchReviews();
   }, [id]);
 
-  // Loading and error states
   if (loading) return <p>Loading dealer info...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!dealer) return <p>No dealer found with ID {id}</p>;
@@ -76,8 +79,8 @@ const Dealer = () => {
           <p>No reviews found for this dealer.</p>
         ) : (
           <div className="review-cards">
-            {reviews.map((r) => (
-              <div className="review-card" key={r.id}>
+            {reviews.map((r, idx) => (
+              <div className="review-card" key={r._id || idx}>
                 <p className="review-text">{r.review}</p>
                 <p className="review-meta">
                   <strong>{r.name}</strong> — {r.purchase ? "Purchased" : "Not Purchased"}  
@@ -91,7 +94,7 @@ const Dealer = () => {
       </div>
 
       <div style={{ marginTop: "20px" }}>
-        <a href={`/post_review/${id}`} className="post-review-button">
+        <a href={`/postreview/${id}`} className="post-review-button">
           ➕ Post a Review
         </a>
       </div>
